@@ -75,7 +75,7 @@ class InsulinDoseCalculator:
     """
     def backgroundInsulinDose(self, weight):
         if weight > 130 or weight < 40:
-            return None
+            return -1
 
         """
         The general approach is to take 0.55 multiplied by the weight in
@@ -93,13 +93,13 @@ class InsulinDoseCalculator:
     """
     def personalSensitivityToInsulin(self, activity_level, k_activity, k_drops):
         if activity_level > 10 or activity_level < 0:
-            return None
+            return -1
 
         if k_activity > 10 or k_activity < 0:
-            return None
+            return -1
 
         if k_drops > 100 or k_drops < 15:
-            return None
+            return -1
 
 
 def main():
