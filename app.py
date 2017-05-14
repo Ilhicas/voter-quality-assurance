@@ -16,19 +16,26 @@ class InsulinDoseCalculator:
   """
     def mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
         if carbo_meal > 120 or carbo_meal < 60:
-            return None
+            return -1
 
         if carbo_proc > 15 or carbo_proc < 10:
-            return None
+            return -1
 
         if act_blood_sugar > 250 or act_blood_sugar < 120:
-            return None
+            return -1
 
         if tgt_blood_sugar > 120 or tgt_blood_sugar < 80:
-            return None
+            return -1
 
         if sensivity > 100 or sensivity < 15:
-            return None
+            return -1
+
+        """In the special case when the target blood sugar level is greater 
+        than the actual blood sugar level, the return value of this method 
+        is zero (no insulin).
+        """
+        if tgt_blood_sugar > act_blood_sugar:
+            return 0
 
         """The high  blood  sugar  dose  is  calculated  by  taking  the  blood
         sugar  level  measured  before the meal minus the target blood sugar
