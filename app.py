@@ -1,10 +1,18 @@
+from flask import Flask
+from flask_spyne import Spyne
+from spyne.protocol.soap import Soap11
+from spyne.model.primitive import Unicode, Integer
+from spyne.model.complex import Iterable
 #if  one unit of insulin processes 12g of mealtime carbohydrates, it will drop blood sugar by  50  mg/dl  in  an  average  individual
 avg_processed_carbohydrates = 12
 avg_sugar_drop = 50
 ratio = 0.55
 
-class InsulinDoseCalculator:
+app = Flask(__name__)
+spyne = Spyne(app)
 
+class InsulinDoseCalculator(spyne.Service):
+  
     """Calculates the number of insulin units needed after one meal.
   Keyword arguments:
   carbo_meal -- total grams of carbohydrates in the meal (between 60g and 120g)
@@ -14,7 +22,12 @@ class InsulinDoseCalculator:
   sensivity -- individual sensitivity (between 15mg/dl and 100mg/dl per unit of insulin)
   Returns: the number of units of rapid acting insulin needed after a meal (i.e., bolus insulin replacement dose)
   """
-    def mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
+    __service_url_path__ = '/soap/insulincalculator'
+    __in_protocol__ = Soap11(validator='lxml')
+    __out_protocol__ = Soap11()
+
+    @spyne.srpc(Integer, Integer, Integer, Integer, Integer, _returns=Integer)
+    def mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
         if carbo_meal > 120 or carbo_meal < 60:
             return -1
 
@@ -66,14 +79,15 @@ class InsulinDoseCalculator:
         """
         mealtimeDose = high_blood_sugar_dose + carbohydrate_dose
 
-        return mealtimeDose
+        return int(mealtimeDose)
 
     """Calculates the total number of units of insulin needed between meals
     Keyword arguments:
     weight -- Weight in kilograms (between 40kg and 130kg)
     Returns: Background insulin dose
     """
-    def backgroundInsulinDose(self, weight):
+    @spyne.srpc(Integer, _returns=Integer)
+    def backgroundInsulinDose(weight):
         if weight > 130 or weight < 40:
             return -1
 
@@ -82,16 +96,17 @@ class InsulinDoseCalculator:
         kilograms as the total (i.e., mealtime plus background) daily insulin
         requirement. The background insulin dose is generally 50%  of that total.
         """
-        return (ratio * weight)/2
+        return int(ratio * weight)/2
 
     """Determines an individual's sensitivity to one unit of insulin
     Keyword arguments:
-    activity_level -- today’s physical activity level (between 0 and 10)
+    activity_level -- today's physical activity level (between 0 and 10)
     k_activity -- K samples of physical activity level in some day (between 0 and 10)
     k_drops -- K  samples  of  drops  in  blood  sugar  from  one  unit  of  insulin  in  that  day  (between  15mg/dl and 100mg/dl)
     Returns: Background insulin dose
     """
-    def personalSensitivityToInsulin(self, activity_level, k_activity, k_drops):
+    @spyne.srpc(Integer, Iterable(Integer), Iterable(Integer), _returns=Integer)
+    def personalSensitivityToInsulin(activity_level, k_activity, k_drops):
         if activity_level > 10 or activity_level < 0:
             return -1
 
@@ -102,10 +117,5 @@ class InsulinDoseCalculator:
             return -1
 
 
-def main():
-    weight = input("Weight")
-    ic = InsulinDoseCalculator()
-    print(ic.backgroundInsulinDose(weight))
-
 if __name__ == '__main__':
-    main()
+    app.run(host = '127.0.0.1',port=9000)
