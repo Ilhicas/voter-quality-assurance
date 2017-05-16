@@ -110,12 +110,28 @@ class InsulinDoseCalculator(spyne.Service):
         if activity_level > 10 or activity_level < 0:
             return -1
 
-        if k_activity > 10 or k_activity < 0:
+        if len(k_activity) > 10 or len(k_activity) < 0:
             return -1
 
-        if k_drops > 100 or k_drops < 15:
+        if len(k_drops) > 100 or len(k_drops) < 15:
+            return -1
+        
+        if len(k_activity) != len(k_drops):
             return -1
 
+        mean_k_drops = sum(k_drops)/len(k_drops)
+        mean_k_activity = sum(k_activity)/len(k_activity)
+        
+        beta_up = beta_down = 0
+        for i in range(len(k_activity)):
+            beta_up += (k_activity[i] - mean_k_activity) * (k_drops[i] - mean_k_drops)
+            beta_down += pow(k_activity[i] - mean_k_activity,2)
+        
+        beta = beta_up/beta_down
+
+        alpha = mean_k_drops - (beta * mean_k_activity)
+
+        return alpha + (beta * activity_level)
 
 if __name__ == '__main__':
     app.run(host = '127.0.0.1',port=9000)
