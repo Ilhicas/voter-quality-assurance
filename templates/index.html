@@ -5,35 +5,39 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Insuline Calculator</title>
+    <title>Insulin Calculator</title>
 </head>
 <body>
 
-    <div><h1>Insuline Calculator</h1></div>
+    <div><h1>Insulin Calculator</h1></div>
     <div>
         <div>
             <h3>Choose Calculator</h3>
 
             <select onchange="changeOptions(this)">
-              <option value="" selected="selected"></option>
-              <option value="form_1">Meal Time Insuline Dose Calculator</option>
-              <option value="form_2">Background Insuline Dose Calculator</option>
-              <option value="form_3">Personal Sensitivity to Insuline Calculator</option>
+                <option value="" selected="selected"></option>
+                <option value="form_1">Meal Time Insulin Dose Calculator</option>
+                <option value="form_2">Background Insulin Dose Calculator</option>
+                <option value="form_3">Personal Sensitivity to Insulin Calculator</option>
             </select>
 
-            <form class="className" name="form_1" id="form_1" style="display:none">
-              <!---- THIS IS FORM 1---->
-              a
+            <form action="/mealtimeInsulinDose" method="get" class="className" name="form_1" id="form_1" style="display:none">
+                <!---- THIS IS FORM 1---->
+                <label>Total grams of carbohydrates in the meal</label>
+                <input type="number" required>
+                <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin</label>
+                <input type="number" required>
+                <button type="submit">Submit!</button>
             </form>
 
-            <form class="className" name="form_2" id="form_2" style="display:none">
-              <!---- THIS IS FORM 2---->
-              b
+            <form action="/backgroundInsulinDose" method="get" class="className" name="form_2" id="form_2" style="display:none">
+                <!---- THIS IS FORM 2---->
+                b
             </form>
 
-            <form class="className" name="form_3" id="form_3" style="display:none">
-              <!---- THIS IS FORM 3---->
-              c
+            <form action="/personalSensitivityToInsulin" method="get" class="className" name="form_3" id="form_3" style="display:none">
+                <!---- THIS IS FORM 3---->
+                c
             </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
         </div>
 
