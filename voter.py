@@ -81,7 +81,74 @@ voter = Voter()
 def index():
     return render_template("index.html")
 
-@app.route("/insulindosecalculator", methods=["GET"])
-def insulin_calculator():
-    #TODO Voter.method invokation and returns accordingly
-    return None
+
+"""Calculates the number of insulin units needed after one meal.
+Keyword arguments:
+carbo_meal -- total grams of carbohydrates in the meal (between 60g and 120g)
+carbo_proc -- total grams of carbohydrates processed by 1 unit of rapid acting insulin (between 10g/unit and 15g/unit, but the typical value is 12g/unit)
+act_blood_sugar -- actual blood sugar level measured before the meal (between 120mg/dl and 250mg/dl)
+tgt_blood_sugar -- target blood sugar before the meal (between 80mg/dl and 120mg/dl)
+sensivity -- individual sensitivity (between 15mg/dl and 100mg/dl per unit of insulin)
+Returns: the number of units of rapid acting insulin needed after a meal (i.e., bolus insulin replacement dose)
+"""
+@app.route("/mealtimeInsulinDose", methods=["GET"])
+def mealtimeInsulinDose():
+    carbo_meal = request.args.get('carbo_meal')
+    carbo_proc = request.args.get('carbo_proc')
+    act_blood_sugar = request.args.get('act_blood_sugar')
+    tgt_blood_sugar = request.args.get('tgt_blood_sugar')
+    sensitivity = request.args.get('sensitivity')
+
+    if not carbo_meal or not carbo_proc or not act_blood_sugar or not act_blood_sugar or not tgt_blood_sugar or not sensitivity:
+        #TODO Error message or something
+        return render_template("index.html", response="Failed to calculate")
+
+    # Call webservices and do voting stuff for mealtimeInsulinDose here
+    # ....
+    response = 100
+
+    return render_template("index.html", response=response)
+
+
+"""Calculates the total number of units of insulin needed between meals
+Keyword arguments:
+weight -- Weight in kilograms (between 40kg and 130kg)
+Returns: Background insulin dose
+"""
+@app.route("/backgroundInsulinDose", methods=["GET"])
+def backgroundInsulinDose():
+    weight = request.args.get('weight')
+    if not weight:
+        #TODO Error message or something
+        return render_template("index.html", response="Failed to calculate")
+
+    # Call webservices and do voting stuff for backgroundInsulinDose here
+    # ....
+    response = 100
+    return render_template("index.html", response=response)
+
+
+"""Determines an individual's sensitivity to one unit of insulin
+Keyword arguments:
+activity_level -- today's physical activity level (between 0 and 10)
+k_activity -- K samples of physical activity level in some day (between 0 and 10)
+k_drops -- K  samples  of  drops  in  blood  sugar  from  one  unit  of  insulin  in  that  day  (between  15mg/dl and 100mg/dl)
+Returns: Background insulin dose
+"""
+@app.route("/personalSensitivityToInsulin", methods=["GET"])
+def personalSensitivityToInsulin():
+    activity_level = request.args.get('activity_level')
+    k_activity = request.args.getlist('k_activity')
+    k_drops = request.args.getlist('k_drops')
+    if not activity_level or not k_activity or not k_drops:
+        return render_template("index.html", response="Failed to calculate")
+
+
+    # Call webservices and do voting stuff for personalSensitivityToInsulin here
+    # ....
+    response = 100
+    return render_template("index.html", response=response)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
