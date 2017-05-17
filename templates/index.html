@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../static/css/css.css">
     <title>Insulin Calculator</title>
 </head>
 <body>
@@ -22,22 +23,32 @@
             </select>
 
             <form action="/mealtimeInsulinDose" method="get" class="className" name="form_1" id="form_1" style="display:none">
-                <!---- THIS IS FORM 1---->
-                <label>Total grams of carbohydrates in the meal</label>
+                <!-- FORM FOR MEALTIME INSULINE DOSE---->
+                <label>Total grams of carbohydrates in the meal(g)</label>
                 <input type="number" required>
-                <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin</label>
+                <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin(g/unit)</label>
                 <input type="number" required>
+                <label>Blood suger measured before the meal(mg/dl)</label>
+                <input type="number" required>
+                <label>Target blood suger after the meal(mg/dl)</label>
+                <input type="number" required>
+                <label>Sensitivity(mg/dl)</label>
+                <input type="number" required>
+
                 <button type="submit">Submit!</button>
             </form>
 
             <form action="/backgroundInsulinDose" method="get" class="className" name="form_2" id="form_2" style="display:none">
-                <!---- THIS IS FORM 2---->
-                b
+                <!-- FORM FOR BACKGROUND INSULIN DOSE---->
+                <label>Weight(Kg)</label>
+                <input type="number" required>
+
+                <button type="submit">Submit!</button>
             </form>
 
             <form action="/personalSensitivityToInsulin" method="get" class="className" name="form_3" id="form_3" style="display:none">
-                <!---- THIS IS FORM 3---->
-                c
+                <!-- FORM FOR --->
+
             </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
         </div>
 
