@@ -12,7 +12,6 @@
     <title>Insulin Calculator</title>
 </head>
 <body>
-
     <div><h1>Insulin Calculator</h1></div>
     <div>
         <div>
@@ -24,37 +23,39 @@
                 <option value="form_2">Background Insulin Dose Calculator</option>
                 <option value="form_3">Personal Sensitivity to Insulin Calculator</option>
             </select>
+            <div class="container">
+                <form action="/mealtimeInsulinDose" method="get" class="form-group" name="form_1" id="form_1" style="display:none">
+                    <!-- FORM FOR MEALTIME INSULINE DOSE---->
+                    <label>Total grams of carbohydrates in the meal(g)</label>
+                    <input class="form-control" type="number" name="carbo_meal" required>
+                    <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin(g/unit)</label>
+                    <input class="form-control" type="number" name="carbo_proc" required>
+                    <label>Blood suger measured before the meal(mg/dl)</label>
+                    <input class="form-control" type="number" name="act_blood_sugar" required>
+                    <label>Target blood suger after the meal(mg/dl)</label>
+                    <input class="form-control" type="number" name="tgt_blood_sugar" required>
+                    <label>Sensitivity(mg/dl)</label>
+                    <input class="form-control"type="number" name="sensivity" required>
 
-            <form action="/mealtimeInsulinDose" method="get" class="className" name="form_1" id="form_1" style="display:none">
-                <!-- FORM FOR MEALTIME INSULINE DOSE---->
-                <label>Total grams of carbohydrates in the meal(g)</label>
-                <input type="number" name="carbo_meal" required>
-                <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin(g/unit)</label>
-                <input type="number" name="carbo_proc" required>
-                <label>Blood suger measured before the meal(mg/dl)</label>
-                <input type="number" name="act_blood_sugar" required>
-                <label>Target blood suger after the meal(mg/dl)</label>
-                <input type="number" name="tgt_blood_sugar" required>
-                <label>Sensitivity(mg/dl)</label>
-                <input type="number" name="sensivity" required>
+                    <button class="btn-primary" type="submit">Submit!</button>
+                </form>
+            </div>
+            <div class="container">
+                <form action="/backgroundInsulinDose" method="get" class="form-group" name="form_2" id="form_2" style="display:none">
+                    <!-- FORM FOR BACKGROUND INSULIN DOSE---->
+                    <label>Weight(Kg)</label>
+                    <input class="form-control" type="number" name="weight" required>
 
-                <button type="submit">Submit!</button>
-            </form>
-
-            <form action="/backgroundInsulinDose" method="get" class="className" name="form_2" id="form_2" style="display:none">
-                <!-- FORM FOR BACKGROUND INSULIN DOSE---->
-                <label>Weight(Kg)</label>
-                <input type="number" name="weight" required>
-
-                <button type="submit">Submit!</button>
-            </form>
-
-            <form action="/personalSensitivityToInsulin" method="get" class="className" name="form_3" id="form_3" style="display:none">
+                    <button class="btn-primary" type="submit">Submit!</button>
+                </form>
+            </div>
+            <form action="/personalSensitivityToInsulin" method="get" class="form-group" name="form_3" id="form_3" style="display:none">
                 <!-- FORM FOR --->
 
 
             </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
         </div>
     </div>
+<script src="{{ url_for('static', filename='js/javascript.js') }}"></script>
 </body>
 </html>
