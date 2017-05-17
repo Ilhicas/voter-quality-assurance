@@ -1,8 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from zeep import Client
 from multiprocessing.dummy import Pool
 import collections
 import random
+import time
 
 app = Flask(__name__)
 client_0 = Client('http://localhost:9000/soap/insulincalculator?wsdl')
@@ -17,9 +18,10 @@ class Voter():
         self.pool = Pool(3)
         self.clients = clients
         self.results = []
-
+        self.time_to_live = 1.00
     def collect_results(self, result):
         self.results.append(result)
+        
 
     def _mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
         clients_ids = random.sample(xrange(1,4), 3)
@@ -33,15 +35,19 @@ class Voter():
         return None
     
     def _backgroundInsulinDose(self, weight):
-        clients_ids = random.sample(xrange(1,4), 3)
+        started = time.time()
+        clients_ids = random.sample(xrange(0,3), 3)
         for _id in clients_ids:
-            self.pool.apply_async(self.clients[_id].mealtimeInsulinDose, (weight,), callback= self.collect_results)
+            self.pool.apply_async(self.clients[_id].service.backgroundInsulinDose, (weight,), callback= self.collect_results)
             if len(self.results) > 1 and self.vote():
                 self.pool.terminate()
                 return self.vote(discard=True)
         
-        self.vote(discard=True)
-        return None
+        while((time.time() - started < self.time_to_live) and not self.vote()):
+            pass
+        
+        self.pool.terminate()
+        return self.vote(discard=True)
     
     def _personalSensitivityToInsulin(self, activity_level, k_activity, k_drops):
         clients_ids = random.sample(xrange(1,4), 3)
@@ -58,19 +64,25 @@ class Voter():
     def vote(self, discard=False):
         voter = collections.Counter(self.results)
         
-        if 3 in voter.keys():
-            if discard:
-                self.results = []
-            return voter[3]
+        try:
+            voter = dict(voter)
+            
+            if 3 in voter.values() and len(voter.keys())==1:
+                if discard:
+                    self.results = []
+                return voter.keys()[0]
 
-        if 2 in voter.keys():
+            if 2 in voter.keys() and len(voter.keys() == 2):
+                if discard:
+                    self.results = []
+                return voter.keys()[0]
+            
             if discard:
                 self.results = []
-            return voter[2]
-        
-        if discard:
-            self.results = []
-        #No majority reached , return None
+            #No majority reached , return None
+        except:
+            #Object counter is not yet built
+            pass
         return None
             
 
@@ -107,7 +119,7 @@ def mealtimeInsulinDose():
     # ....
     response = 100
 
-    return render_template("index.html", response=response)
+    return response
 
 
 """Calculates the total number of units of insulin needed between meals
@@ -124,8 +136,10 @@ def backgroundInsulinDose():
 
     # Call webservices and do voting stuff for backgroundInsulinDose here
     # ....
-    response = 100
-    return render_template("index.html", response=response)
+    response = Voter()._backgroundInsulinDose(weight)
+    
+    response = str(response)
+    return response
 
 
 """Determines an individual's sensitivity to one unit of insulin
@@ -147,7 +161,7 @@ def personalSensitivityToInsulin():
     # Call webservices and do voting stuff for personalSensitivityToInsulin here
     # ....
     response = 100
-    return render_template("index.html", response=response)
+    return response
 
 
 if __name__ == '__main__':
