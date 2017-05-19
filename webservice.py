@@ -134,4 +134,4 @@ class InsulinDoseCalculator(spyne.Service):
         return alpha + (beta * activity_level)
 
 if __name__ == '__main__':
-    app.run(host = '127.0.0.1',port=9000)
+    app.run(host = '0.0.0.0',port=9000)
