@@ -6,9 +6,9 @@ import random
 import time
 
 app = Flask(__name__)
-client_0 = Client('http://localhost:9000/soap/insulincalculator?wsdl')
-client_1 = Client('http://localhost:9000/soap/insulincalculator?wsdl')
-client_2 = Client('http://localhost:9000/soap/insulincalculator?wsdl')
+client_0 = Client('http://10.17.1.23:8081/insulin?wsdl')
+client_1 = Client('http://10.17.1.3:8080/services/InsulinDoseCalculator?wsdl')
+client_2 = Client('http://10.17.1.8:8080/InsulinDoseCalculator/ws/insulin-dose-calculator?wsdl')
 clients = [client_0, client_1, client_2]
 
 class Voter():
@@ -18,10 +18,10 @@ class Voter():
         self.pool = Pool(3)
         self.clients = clients
         self.results = []
-        self.time_to_live = 1.00
+        self.time_to_live = 4.00
     def collect_results(self, result):
-        self.results.append(result)
-        
+        self.results.append(int(result))
+        print self.results
 
     def _mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
         clients_ids = random.sample(xrange(1,4), 3)
@@ -66,23 +66,14 @@ class Voter():
         
         try:
             voter = dict(voter)
-            
-            if 3 in voter.values() and len(voter.keys())==1:
-                if discard:
-                    self.results = []
-                return voter.keys()[0]
-
-            if 2 in voter.keys() and len(voter.keys() == 2):
-                if discard:
-                    self.results = []
-                return voter.keys()[0]
-            
-            if discard:
-                self.results = []
+            for result, votes in voter.iteritems():
+                if votes == 3 or votes == 2:
+                    return result
+        
             #No majority reached , return None
-        except:
+        except Exception as e:
             #Object counter is not yet built
-            pass
+            print e
         return None
             
 
