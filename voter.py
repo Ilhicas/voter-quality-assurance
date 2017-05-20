@@ -24,6 +24,7 @@ class Voter():
         print self.results
 
     def _mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
+        started = time.time()
         clients_ids = random.sample(xrange(0,3), 3)
         for _id in clients_ids:
             self.pool.apply_async(self.clients[_id].service.mealtimeInsulinDose, (carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity,), callback= self.collect_results)
@@ -31,8 +32,12 @@ class Voter():
                 self.pool.terminate()
                 return self.vote(discard=True)
 
-        self.vote(discard=True)
-        return None
+        while((time.time() - started < self.time_to_live) and not self.vote()):
+            pass
+
+        self.pool.terminate()
+        return self.vote(discard=True)
+
 
     def _backgroundInsulinDose(self, weight):
         started = time.time()
@@ -50,6 +55,7 @@ class Voter():
         return self.vote(discard=True)
 
     def _personalSensitivityToInsulin(self, activity_level, k_activity, k_drops):
+        started = time.time()
         clients_ids = random.sample(xrange(0,3), 3)
         for _id in clients_ids:
             self.pool.apply_async(self.clients[_id].service.mealtimeInsulinDose, (activity_level, k_activity, k_drops,), callback= self.collect_results)
@@ -57,9 +63,11 @@ class Voter():
                 self.pool.terminate()
                 return self.vote(discard=True)
 
-        self.vote(discard=True)
+        while((time.time() - started < self.time_to_live) and not self.vote()):
+            pass
 
-        return None
+        self.pool.terminate()
+        return self.vote(discard=True)
 
     def vote(self, discard=False):
         voter = collections.Counter(self.results)
