@@ -111,11 +111,11 @@ class InsulinDoseCalculator(spyne.Service):
     """
     @spyne.srpc(Integer, Integer(max_occurs="unbounded") , Integer(max_occurs="unbounded"), _returns=Integer)
     def personalSensitivityToInsulin(activity_level, k_activity, k_drops):
-        _k_activity = [element for element in k_activity]
-        _k_drops = [element for element in k_drops]
+        _k_activity = [float(element) for element in k_activity]
+        _k_drops = [float(element) for element in k_drops]
         print "_k_activiity", _k_activity
         print "_k_drops", _k_drops
-        print "activiti",activity_level
+        print "activity",activity_level
 
         if activity_level > 10 or activity_level < 0:
             return -1
@@ -145,7 +145,7 @@ class InsulinDoseCalculator(spyne.Service):
         beta = beta_up/beta_down
 
         alpha = mean_k_drops - (beta * mean_k_activity)
-        print(alpha)
+        
         return int(alpha + (beta * activity_level))
 
 if __name__ == '__main__':
