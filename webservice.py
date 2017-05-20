@@ -109,12 +109,15 @@ class InsulinDoseCalculator(spyne.Service):
     k_drops -- K  samples  of  drops  in  blood  sugar  from  one  unit  of  insulin  in  that  day  (between  15mg/dl and 100mg/dl)
     Returns: Background insulin dose
     """
-    @spyne.srpc(Integer, Iterable(Integer), Iterable(Integer), _returns=Integer)
+    @spyne.srpc(Integer, Integer(max_occurs="unbounded") , Integer(max_occurs="unbounded"), _returns=Integer)
     def personalSensitivityToInsulin(activity_level, k_activity, k_drops):
         _k_activity = [element for element in k_activity]
         _k_drops = [element for element in k_drops]
+        print "_k_activiity", _k_activity
+        print "_k_drops", _k_drops
+        print "activiti",activity_level
 
-        if activity_level > 10 or activity_level < 2:
+        if activity_level > 10 or activity_level < 0:
             return -1
 
         if len(_k_activity) > 10 or len(_k_activity) < 2:
