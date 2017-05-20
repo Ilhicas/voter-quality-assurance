@@ -23,11 +23,11 @@ class InsulinDoseCalculator(spyne.Service):
     carbo_proc -- total grams of carbohydrates processed by 1 unit of rapid acting insulin (between 10g/unit and 15g/unit, but the typical value is 12g/unit)
     act_blood_sugar -- actual blood sugar level measured before the meal (between 120mg/dl and 250mg/dl)
     tgt_blood_sugar -- target blood sugar before the meal (between 80mg/dl and 120mg/dl)
-    sensivity -- individual sensitivity (between 15mg/dl and 100mg/dl per unit of insulin)
+    sensitivity -- individual sensitivity (between 15mg/dl and 100mg/dl per unit of insulin)
     Returns: the number of units of rapid acting insulin needed after a meal (i.e., bolus insulin replacement dose)
     """
     @spyne.srpc(Integer, Integer, Integer, Integer, Integer, _returns=Integer)
-    def mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
+    def mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensitivity):
         if carbo_meal > 120 or carbo_meal < 60:
             return -1
 
@@ -40,7 +40,7 @@ class InsulinDoseCalculator(spyne.Service):
         if tgt_blood_sugar > 120 or tgt_blood_sugar < 80:
             return -1
 
-        if sensivity > 100 or sensivity < 15:
+        if sensitivity > 100 or sensitivity < 15:
             return -1
 
         """In the special case when the target blood sugar level is greater
@@ -56,13 +56,16 @@ class InsulinDoseCalculator(spyne.Service):
         unit  of  the  used  insulin  will  decrease  in  that  particular
         individual (i.e., individual sensitivity).
         """
-        high_blood_sugar_dose = (act_blood_sugar - tgt_blood_sugar)/sensivity
+        high_blood_sugar_dose = (float(act_blood_sugar) - float(tgt_blood_sugar))/float(sensitivity)
 
         """The carbohydrate dose equals the total grams of carbohydrates
         consumed during the meal divided by the number of grams
         processed by one unit of the used rapid acting insulin.
         """
-        carbohydrate_dose = carbo_meal/carbo_proc
+
+        # carbo_proc = carbo_proc / sensitivity
+
+        carbohydrate_dose = float(carbo_meal)/float(carbo_proc)
 
         """
         This value is adjusted according to individual sensitivity, by
@@ -72,13 +75,13 @@ class InsulinDoseCalculator(spyne.Service):
         processes a higher or lower value of carbohydrates, compared
         to the reference of 12g/unit).
         """
-        carbohydrate_dose = (carbohydrate_dose * avg_sugar_drop)/avg_processed_carbohydrates
+
 
         """The number of units of rapid acting insulin after a meal
         is equal to the high blood sugar dose plus the carbohydrate dose.
         """
         mealtimeDose = high_blood_sugar_dose + carbohydrate_dose
-
+        print(mealtimeDose)
         return int(mealtimeDose)
 
     """Calculates the total number of units of insulin needed between meals
@@ -96,7 +99,8 @@ class InsulinDoseCalculator(spyne.Service):
         kilograms as the total (i.e., mealtime plus background) daily insulin
         requirement. The background insulin dose is generally 50%  of that total.
         """
-        return int(ratio * weight)/2
+        
+        return int((ratio * weight)/2)
 
     """Determines an individual's sensitivity to one unit of insulin
     Keyword arguments:
@@ -127,8 +131,8 @@ class InsulinDoseCalculator(spyne.Service):
         if len(_k_activity) != len(_k_drops):
             return -1
 
-        mean_k_drops = sum(_k_drops)/len(_k_drops)
-        mean_k_activity = sum(_k_activity)/len(_k_activity)
+        mean_k_drops = sum(_k_drops)/float(len(_k_drops))
+        mean_k_activity = sum(_k_activity)/float(len(_k_activity))
 
         beta_up = beta_down = 0
         for i in range(len(_k_activity)):
@@ -139,7 +143,8 @@ class InsulinDoseCalculator(spyne.Service):
 
         alpha = mean_k_drops - (beta * mean_k_activity)
         print(alpha)
-        return alpha + (beta * activity_level)
+        return int(alpha + (beta * activity_level))
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0',port=9000)
+
