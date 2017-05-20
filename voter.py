@@ -24,16 +24,16 @@ class Voter():
         print self.results
 
     def _mealtimeInsulinDose(self, carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity):
-        clients_ids = random.sample(xrange(1,4), 3)
+        clients_ids = random.sample(xrange(0,3), 3)
         for _id in clients_ids:
-            self.pool.apply_async(self.clients[_id].mealtimeInsulinDose, (carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity,), callback= self.collect_results)
+            self.pool.apply_async(self.clients[_id].service.mealtimeInsulinDose, (carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensivity,), callback= self.collect_results)
             if len(self.results) > 1 and self.vote():
                 self.pool.terminate()
                 return self.vote(discard=True)
-        
+
         self.vote(discard=True)
         return None
-    
+
     def _backgroundInsulinDose(self, weight):
         started = time.time()
         clients_ids = random.sample(xrange(0,3), 3)
@@ -42,40 +42,40 @@ class Voter():
             if len(self.results) > 1 and self.vote():
                 self.pool.terminate()
                 return self.vote(discard=True)
-        
+
         while((time.time() - started < self.time_to_live) and not self.vote()):
             pass
-        
+
         self.pool.terminate()
         return self.vote(discard=True)
-    
+
     def _personalSensitivityToInsulin(self, activity_level, k_activity, k_drops):
-        clients_ids = random.sample(xrange(1,4), 3)
+        clients_ids = random.sample(xrange(0,3), 3)
         for _id in clients_ids:
-            self.pool.apply_async(self.clients[_id].mealtimeInsulinDose, (activity_level, k_activity, k_drops,), callback= self.collect_results)
+            self.pool.apply_async(self.clients[_id].service.mealtimeInsulinDose, (activity_level, k_activity, k_drops,), callback= self.collect_results)
             if len(self.results) > 1 and self.vote():
                 self.pool.terminate()
                 return self.vote(discard=True)
-        
+
         self.vote(discard=True)
 
         return None
 
     def vote(self, discard=False):
         voter = collections.Counter(self.results)
-        
+
         try:
             voter = dict(voter)
             for result, votes in voter.iteritems():
                 if votes == 3 or votes == 2:
                     return result
-        
+
             #No majority reached , return None
         except Exception as e:
             #Object counter is not yet built
             print e
         return None
-            
+
 
 #Global Voter
 voter = Voter()
@@ -108,8 +108,9 @@ def mealtimeInsulinDose():
 
     # Call webservices and do voting stuff for mealtimeInsulinDose here
     # ....
-    response = 100
+    response = Voter()._mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensitivity)
 
+    response = str(response)
     return response
 
 
@@ -128,7 +129,7 @@ def backgroundInsulinDose():
     # Call webservices and do voting stuff for backgroundInsulinDose here
     # ....
     response = Voter()._backgroundInsulinDose(weight)
-    
+
     response = str(response)
     return response
 
@@ -151,7 +152,9 @@ def personalSensitivityToInsulin():
 
     # Call webservices and do voting stuff for personalSensitivityToInsulin here
     # ....
-    response = 100
+    response = Voter()._personalSensitivityToInsulin(activity_level, k_activity, k_drops)
+
+    response = str(response)
     return response
 
 
