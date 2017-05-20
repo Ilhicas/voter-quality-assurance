@@ -107,30 +107,38 @@ class InsulinDoseCalculator(spyne.Service):
     """
     @spyne.srpc(Integer, Iterable(Integer), Iterable(Integer), _returns=Integer)
     def personalSensitivityToInsulin(activity_level, k_activity, k_drops):
-        if activity_level > 10 or activity_level < 0:
+        _k_activity = [element for element in k_activity]
+        _k_drops = [element for element in k_drops]
+
+        if activity_level > 10 or activity_level < 2:
             return -1
 
-        if len(k_activity) > 10 or len(k_activity) < 0:
+        if len(_k_activity) > 10 or len(_k_activity) < 2:
             return -1
 
-        if len(k_drops) > 100 or len(k_drops) < 15:
-            return -1
-        
-        if len(k_activity) != len(k_drops):
+        for drop in _k_drops:
+            if drop > 100 or drop < 15:
+                return -1
+
+        for activity in _k_activity:
+            if drop > 10 or drop < 0:
+                return -1
+
+        if len(_k_activity) != len(_k_drops):
             return -1
 
-        mean_k_drops = sum(k_drops)/len(k_drops)
-        mean_k_activity = sum(k_activity)/len(k_activity)
-        
+        mean_k_drops = sum(_k_drops)/len(_k_drops)
+        mean_k_activity = sum(_k_activity)/len(_k_activity)
+
         beta_up = beta_down = 0
-        for i in range(len(k_activity)):
-            beta_up += (k_activity[i] - mean_k_activity) * (k_drops[i] - mean_k_drops)
-            beta_down += pow(k_activity[i] - mean_k_activity,2)
-        
+        for i in range(len(_k_activity)):
+            beta_up += (_k_activity[i] - mean_k_activity) * (_k_drops[i] - mean_k_drops)
+            beta_down += pow(_k_activity[i] - mean_k_activity,2)
+
         beta = beta_up/beta_down
 
         alpha = mean_k_drops - (beta * mean_k_activity)
-
+        print(alpha)
         return alpha + (beta * activity_level)
 
 if __name__ == '__main__':
