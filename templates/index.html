@@ -19,15 +19,15 @@
 
             <select onchange="changeOptions(this)">
                 <option value="" selected="selected"></option>
-                <option value="form_1">Meal Time Insulin Dose Calculator</option>
+                <option value="form_1">Mealtime Insulin Dose - Standard Insulin Sensitivity </option>
+                <option value="form_3">Mealtime Insulin Dose - Personal Insulin Sensitivity </option>
                 <option value="form_2">Background Insulin Dose Calculator</option>
-                <option value="form_3">Personal Sensitivity to Insulin Calculator</option>
             </select>
         </div>
         <br>
             <div class="container">
-                <form action="/mealtimeInsulinDose" method="get" class="form-group" name="form_1" id="form_1" style="display:none">
-                    <!-- FORM FOR MEALTIME INSULINE DOSE---->
+                <form id="form_1" action="/mealtimeInsulinDose" method="get" class="form-group" name="form_1" style="display:none">
+                    <!-- FORM FOR MEALTIME INSULINE DOSE -->
                     <label>Total grams of carbohydrates in the meal(g)</label>
                     <input class="form-control" type="number" name="carbo_meal" required>
                     <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin(g/unit)</label>
@@ -37,78 +37,92 @@
                     <label>Target blood suger after the meal(mg/dl)</label>
                     <input class="form-control" type="number" name="tgt_blood_sugar" required>
                     <label>Sensitivity(mg/dl)</label>
-                    <input class="form-control"type="number" name="sensivity" required>
+                    <input class="form-control"type="number" name="sensitivity" value="50" required>
 
-                    <button class="btn-primary" type="submit">Submit!</button>
+                    <button id="submit1" class="btn-primary" type="submit" disabled="disabled">Submit!</button>
                 </form>
             </div>
             <div class="container">
                 <form action="/backgroundInsulinDose" method="get" class="form-group" name="form_2" id="form_2" style="display:none">
-                    <!-- FORM FOR BACKGROUND INSULIN DOSE---->
+                    <!-- FORM FOR BACKGROUND INSULIN DOSE -->
                     <label>Weight(Kg)</label>
                     <input class="form-control" type="number" name="weight" required>
 
-                    <button class="btn-primary" type="submit">Submit!</button>
+                    <button id="submit2" class="btn-primary" type="submit" disabled="disabled">Submit!</button>
                 </form>
             </div>
-                <form action="/personalSensitivityToInsulin" method="get" class="form-group" name="form_3" id="form_3" style="display:none">
+
+                <form id="form_3" action="/personalSensitivityToInsulin" method="get" class="form-group" name="form_3" style="display:none">
                     <!-- FORM FOR --->
+
                     <div class="row">
-                        <div class="col-md-4 col-md-offset-2">
-                                <label>Today's activity level (0/10)</label>
-                                <input class="form-control" type="number" name="activity_level" required>
+                        <div id="mealtime" class="col-md-8 col-md-offset-2">
+                            <label>Total grams of carbohydrates in the meal(g)</label>
+                            <input class="form-control" type="number" name="carbo_meal" required/>
+                            <label>Total grams of carbohydrates processed by 1 unit of rapid acting insulin(g/unit)</label>
+                            <input class="form-control" type="number" name="carbo_proc" required/>
+                            <label>Blood suger measured before the meal(mg/dl)</label>
+                            <input class="form-control" type="number" name="act_blood_sugar" required/>
+                            <label>Target blood suger after the meal(mg/dl)</label>
+                            <input class="form-control" type="number" name="tgt_blood_sugar" required/>
+                            <label>Today's activity level (0/10)</label>
+                            <input class="form-control" type="number" name="activity_level" required/>
                         </div>
                     </div>
 
+                        <br>
+                        <br>
+                        <br>
                     <div class="row">
 
-                        <div class="col-md-4 col-md-offset-2">
+                        <div id="k_activity" class="col-md-4 col-md-offset-2">
                             <label>Activity level of day 1</label>
-                            <input class="form-control" type="number" name="k_activity" required>
+                            <input id="a1" class="form-control" type="number" name="k_activity" required/>
                             <label>Activity level of day 2</label>
-                            <input class="form-control" type="number" name="k_activity" required>
+                            <input id="a2" class="form-control" type="number" name="k_activity" required/>
                             <label>Activity level of day 3</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a3" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 4</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a4" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 5</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a5" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 6</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a6" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 7</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a7" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 8</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a8" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 9</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a9" class="form-control" type="number" name="k_activity"/>
                             <label>Activity level of day 10</label>
-                            <input class="form-control" type="number" name="k_activity">
+                            <input id="a10" class="form-control" type="number" name="k_activity"/>
                         </div>
-                        <div class="col-md-4">
+
+                        <div id="k_drops" class="col-md-4">
                             <label>Drop in blood sugar from a drop of insuline on day 1</label>
-                            <input class="form-control" type="number" name="k_drops" required>
+                            <input id="k1" class="form-control" type="number" name="k_drops" required/>
                             <label>Drop in blood sugar from a drop of insuline on day 2</label>
-                            <input class="form-control" type="number" name="k_drops" required>
+                            <input id="k2" class="form-control" type="number" name="k_drops" required/>
                             <label>Drop in blood sugar from a drop of insuline on day 3</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k3" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 4</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k4" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 5</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k5" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 6</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k6" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 7</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k7" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 8</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k8" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 9</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k9" class="form-control" type="number" name="k_drops"/>
                             <label>Drop in blood sugar from a drop of insuline on day 10</label>
-                            <input class="form-control" type="number" name="k_drops">
+                            <input id="k10" class="form-control" type="number" name="k_drops"/>
                         </div>
                     </div>
                     <div class="col-xs-6">
-                        <button class="btn-primary" type="submit">Submit!</button>
+                        <button id="submit3" class="btn-primary" type="submit" disabled="disabled">Submit!</button>
                     </div>
                 </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
         </div>
