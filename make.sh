@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+echo "CLEANING .trail FILE OF $1\n";rm $1.pml.trail;echo "\n\nEXECUTING SPIN WITH FILE $1\n";spin $1.pml;echo "\n\nMAKING pan.c FILE\n";spin -a $1.pml;echo "\n\nCOMPILING PAN.C FILE\n";cc pan.c -o $1;echo "\n\nEXECUTING THE VERIFIER\n";./$1;echo "\n\nEXECUTING THE TRAIL IF EXISTS\n";spin -t -p $1.pml
