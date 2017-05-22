@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang= "en">
+{% extends "layout.html" %}
+
+{% block body %}
+
+    {% if response %}
+        {% if response is number %}
+            <div class="alert alert-success" role="alert">Insuline dose: <strong>{{ response }}</strong></div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">{{ response }}</div>
+        {% endif %}
+    {% endif %}
+
+    {% if details %}
+        <button class="btn-primary" onclick="showDetails()">Show Details</button>
+        <div id ="showDetailsDiv" style="display:none">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Details</div>
+                <!-- Table -->
+                <table class="table">
+                    <th>
+                        <tr>
+                            <td>Web Service</td>
+                            <td>Result</td>
+                            <td>Time</td>
+                        </tr>
+                    </th>
+                    <tb>
+                    {% for item in details %}
+                            <tr>
+                                <td>{{ item }}</td>
+                                <td>{{ details[item][0] }}</td>
+                                <td>{{ details[item][1] }}</td>
+                            </tr>
+                    {% endfor %}
+                    </tb>
+                </table>
+            </div>
+
+            {% if second_details %}
+
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Second Details</div>
+                    <!-- Table -->
+                    <table class="table">
+                        <th>
+                            <tr>
+                                <td>Web Service</td>
+                                <td>Result</td>
+                                <td>Time</td>
+                            </tr>
+                        </th>
+                        <tb>
+                        {% for item in second_details %}
+                                <tr>
+                                    <td>{{ item }}</td>
+                                    <td>{{ second_details[item][0] }}</td>
+                                    <td>{{ second_details[item][1] }}</td>
+                                </tr>
+                        {% endfor %}
+                        </tb>
+                    </table>
+                </div>
+
+            {% endif %}
+        </div>
+    {% endif %}
+
+
+
+
+{% endblock %}

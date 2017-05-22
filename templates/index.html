@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html lang= "en">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/css.css') }}" rel="stylesheet">
-    <title>Insulin Calculator</title>
-</head>
-<body>
-    <div><h1>Insulin Calculator</h1></div>
+{% block body %}
+
     <div>
         <div class="container">
             <h3>Choose Calculator</h3>
@@ -46,9 +37,9 @@
                 <form action="/backgroundInsulinDose" method="get" class="form-group" name="form_2" id="form_2" style="display:none">
                     <!-- FORM FOR BACKGROUND INSULIN DOSE -->
                     <label>Weight(Kg)</label>
-                    <input class="form-control" type="number" name="weight" required>
+                    <input id="backgroundInput" class="form-control" type="number" name="weight" required>
 
-                    <button id="submit2" class="btn-primary" type="submit" disabled="disabled">Submit!</button>
+                    <button id="submit2" class="btn-primary" onclick="checkInputBackground()" disabled="disabled">Submit!</button>
                 </form>
             </div>
 
@@ -127,6 +118,5 @@
                 </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
         </div>
     </div>
-<script src="{{ url_for('static', filename='js/javascript.js') }}"></script>
-</body>
+{% endblock %}
 </html>
