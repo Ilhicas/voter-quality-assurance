@@ -1,63 +1,75 @@
+bool stop = false;
+
 inline voter(first, second, third){
     int counter = 1, possible_value = -1;
     bool verified = false;
     printf("Case of %d %d %d\n", first, second, third)
-    if
-    :: first == second -> counter++; possible_value = first; verified = true;
-    :: else -> skip
-    fi
+    T0: if
+        :: stop == true -> goto S6;
+        :: else -> goto S0
+        fi
 
-    if
-    :: first == third && verified == false -> counter++; possible_value = first; verified = true;
-    :: else -> skip
-    fi
+    S0: if
+        :: first == second -> counter++; possible_value = first; verified = true;
+        :: else -> skip;
+        fi
+        goto S1;
+
+    S1: if
+        :: verified == true -> goto S7;
+        :: else -> goto S2;
+        fi
+
+    S2: if
+        :: first == third -> counter++; possible_value = first; verified = true;
+        :: else -> skip;
+        fi
+        goto S3
     
-    if
-    :: second == third && verified == false -> counter++; possible_value = second; verified = true;
-    :: else -> skip
-    fi
+    S3: if
+        :: verified == true -> goto S7;
+        :: else -> goto S4;
+        fi
+    
+    S4: if
+        :: second == third -> counter++; possible_value = second; verified = true;
+        :: else -> skip;
+        fi
+        goto S5;
 
-    if
-    :: counter == 1 -> printf("It was not possible to calculate the insulin dose; please try again\n")
-    :: else -> printf("%d\n",possible_value)
-    fi
+    S5: if
+        :: verified == true -> goto S7;
+        :: else -> goto S6;
+        fi
+    S6: printf("It was not possible to calculate the insulin dose; please try again\n");
+        goto S8;
+
+    S7: printf("%d\n",possible_value);
+        goto S8;
+
+    S8: 
 }
+
 
 proctype Timer(){
-    atomic{
-        int timer = 1,i;
-        for(i:1..4){
-            printf("%d..",timer)
-            timer++
-        }
-        printf("Timeout\n")
+    int timer = 1,i;
+    for(i:1..4){
+        timer++
     }
+    stop = true;
+    printf("Timeout\n");
 }
 
 
-proctype Voter1(){
-    atomic{
-        voter(1,1,1);
-    }
-}
-
-proctype Voter2(){
-    atomic{
-        voter(1,2,2);
-    }
-}
-
-proctype Voter3(){
-    atomic{
-        voter(1,2,3);
-    }
+proctype Voter(){
+        int first, second, third;
+        select(first : 1..3);
+        select(second : 1..3);
+        select(third : 1..3);
+        voter(first,second,third);
 }
 
 init{
-    run Voter1();
     run Timer();
-    run Voter2();
-    run Timer();
-    run Voter3();
-    run Timer();
+    run Voter();
 }
