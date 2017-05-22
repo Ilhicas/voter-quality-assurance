@@ -23,26 +23,41 @@ inline voter(first, second, third){
     fi
 }
 
-proctype Voter1(){
+proctype Timer(){
     atomic{
-        voter(1,2,3);
+        int timer = 1,i;
+        for(i:1..4){
+            printf("%d..",timer)
+            timer++
+        }
+        printf("Timeout\n")
     }
 }
 
-proctype Voter2(){
+
+proctype Voter1(){
     atomic{
         voter(1,1,1);
     }
 }
 
-proctype Voter3(){
+proctype Voter2(){
     atomic{
         voter(1,2,2);
     }
 }
 
+proctype Voter3(){
+    atomic{
+        voter(1,2,3);
+    }
+}
+
 init{
     run Voter1();
+    run Timer();
     run Voter2();
+    run Timer();
     run Voter3();
+    run Timer();
 }
