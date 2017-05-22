@@ -19,21 +19,6 @@ function showDetails() {
     }
 }
 
-function checkInputBackground() {
-    var input = document.getElementById('backgroundInput');
-    var button = document.getElementById('submit2');
-    console.log("E chamado");
-    console.log(input.value);
-    if (input.value >= 40 && input.value <= 140 )
-    {
-        console.log("Entra");
-        button.submit();
-    }
-    else {
-        alert("Weight must be between 40kg and 140kg");
-    }
-}
-
 (function() {
     $('#form_1 > input').keyup(function() {
 
