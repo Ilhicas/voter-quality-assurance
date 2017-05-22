@@ -3,11 +3,15 @@ bool stop = false;
 inline voter(first, second, third){
     int counter = 1, possible_value = -1;
     bool verified = false;
-    printf("Case of %d %d %d\n", first, second, third)
+    
+
     T0: if
         :: stop == true -> goto S6;
-        :: else -> goto S0
+        :: else -> goto C0;
         fi
+    
+    C0: printf("Case of %d %d %d\n", first, second, third);
+        goto S0;
 
     S0: if
         :: first == second -> counter++; possible_value = first; verified = true;
@@ -47,7 +51,7 @@ inline voter(first, second, third){
     S7: printf("%d\n",possible_value);
         goto S8;
 
-    S8: 
+    S8: assert( counter >=2 && possible_value != -1)
 }
 
 
