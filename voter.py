@@ -232,7 +232,7 @@ def mealtimeInsulinDose():
 
     response, details = Voter(client_list)._mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, sensitivity)
 
-    if response == -1:
+    if response == -1 or response is None:
         response = error_message
 
     return render_template("response.html", response=response, details=details )
@@ -253,7 +253,7 @@ def backgroundInsulinDose():
     # Call webservices and do voting stuff for backgroundInsulinDose here
     # ....
     response, details = Voter(client_list)._backgroundInsulinDose(weight)
-    if response == -1:
+    if response == -1 or response is None:
         response = error_message
 
     return render_template("response.html", response=response, details=details )
@@ -295,10 +295,10 @@ def personalSensitivityToInsulin():
     response, first_details = Voter(client_list)._personalSensitivityToInsulin(activity_level, k_activity_final, k_drops_final)
     response, second_details = Voter(client_list)._mealtimeInsulinDose(carbo_meal, carbo_proc, act_blood_sugar, tgt_blood_sugar, response)
 
-    if response == -1:
+    if response == -1 or response is None:
         response = error_message
 
     return render_template("response.html", response=response, details=first_details, second_details = second_details)
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(host="0.0.0.0", threaded=True, port=8080)
